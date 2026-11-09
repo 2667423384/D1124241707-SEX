@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習證書 - SDGs 性別平權小達人</title>
+    <style>
+        /* 頁面基本設定 */
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 控制區（輸入框與按鈕） */
+        .controls {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .controls input {
+            padding: 12px;
+            font-size: 16px;
+            width: 250px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-right: 15px;
+            outline: none;
+        }
+
+        .controls input:focus {
+            border-color: #4CAF50;
+        }
+
+        .controls button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #45a049;
+        }
+
+        /* 證書主體設計（不使用圖片，純 CSS 畫框線） */
+        .certificate-container {
+            background-color: #ffffff;
+            width: 800px;
+            max-width: 90vw;
+            padding: 60px 40px;
+            text-align: center;
+            /* 外層金色雙實線 */
+            border: 12px double #d4af37; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* 證書內框線 */
+        .certificate-container::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 2px solid #d4af37;
+        }
+
+        .cert-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+        }
+
+        .cert-subtitle {
+            font-size: 32px;
+            color: #e91e63; /* 使用亮眼的顏色突顯稱號 */
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .cert-content {
+            font-size: 22px;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .name-display {
+            display: inline-block;
+            font-size: 36px;
+            font-weight: bold;
+            color: #000;
+            min-width: 250px;
+            border-bottom: 2px solid #333;
+            padding: 0 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .cert-footer {
+            margin-top: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* 列印模式設定（隱藏按鈕、隱藏背景陰影） */
+        @media print {
+            @page {
+                size: landscape; /* 預設橫向列印 */
+                margin: 0; 
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                justify-content: flex-start;
+            }
+            .controls {
+                display: none; /* 列印時隱藏輸入框與按鈕 */
+            }
+            .certificate-container {
+                box-shadow: none;
+                width: 100%;
+                max-width: 100%;
+                border: 12px double #d4af37; /* 保留框線 */
+                margin: 0 auto;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 網頁操作區塊 -->
+    <div class="controls">
+        <input type="text" id="userNameInput" placeholder="請輸入您的姓名">
+        <button onclick="window.print()">下載 / 列印證書</button>
+    </div>
+
+    <!-- 證書顯示區塊 -->
+    <div class="certificate-container">
+        <div class="cert-title">學習證書</div>
+        <div class="cert-subtitle">SDGs 性別平權小達人</div>
+        
+        <div class="cert-content">
+            特頒此證，以茲證明<br>
+            <!-- 這裡會動態顯示使用者輸入的名字 -->
+            <span class="name-display" id="displayName"></span><br>
+            已成功完成「SDGs 性別平權」情境學習挑戰，<br>
+            展現了對性別平權與多元包容的深刻理解！
+        </div>
+
+        <div class="cert-footer">
+            授證單位：SDGs 學習挑戰營<br>
+            日期：<span id="currentDate"></span>
+        </div>
+    </div>
+
+    <script>
+        // 抓取 DOM 元素
+        const nameInput = document.getElementById('userNameInput');
+        const displayName = document.getElementById('displayName');
+        const dateDisplay = document.getElementById('currentDate');
+
+        // 監聽輸入框的改變，即時更新到證書上
+        nameInput.addEventListener('input', function() {
+            displayName.textContent = this.value;
+        });
+
+        // 自動填入今天的日期 (格式：YYYY 年 MM 月 DD 日)
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = today.getMonth() + 1; 
+        const dd = today.getDate();
+        dateDisplay.textContent = `${yyyy} 年 ${mm} 月 ${dd} 日`;
+    </script>
+
+</body>
+</html>

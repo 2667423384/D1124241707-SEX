@@ -2,125 +2,285 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D1124241707林俊祥 - SDGs 性別平權網頁遊戲</title>
+    <title>D1124241707林俊祥SDGs 性別平權</title>
     <style>
-        /* ================= 共用設定 (防黑屏機制) ================= */
-        body { margin: 0; font-family: "Microsoft JhengHei", sans-serif; background-color: #87CEEB; overflow: hidden; }
-        .page { display: none; width: 100vw; height: 100vh; overflow: hidden; position: relative; background-color: #87CEEB; }
-        .page.active { display: block; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; color: white; font-size: 24px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 10; }
-        
-        /* 遮罩調亮，避免看起來像黑屏 */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(3px); }
-        .modal { background: white; padding: 40px 30px; border-radius: 12px; width: 90%; max-width: 680px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        
-        .instruction-text { font-size: 18px; line-height: 1.8; text-align: left; color: #333; margin: 20px 0; padding: 0 15px; }
-        .highlight { color: #E03E2D; font-weight: bold; }
-        .btn-container { margin-top: 25px; display: flex; justify-content: center; align-items: center; }
-        .action-btn { padding: 12px 35px; font-size: 20px; background: #4682B4; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-        .action-btn:hover { background: #5F9EA0; }
-
-        /* ================= 第一關專屬設定 ================= */
-        #page-level1 header { background-color: rgba(46, 139, 87, 0.9); }
-        #l1-game-container { 
-            position: relative; width: 100%; height: calc(100vh - 65px); 
-            background-color: #87CEEB;
-            /* 柔和的村莊草地感漸層 */
-            background-image: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 45%, #90EE90 45%, #228B22 100%);
+        body { 
+            margin: 0; 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            overflow: hidden; 
+            background-color: #333;
         }
-        .balloon { position: absolute; cursor: pointer; transition: transform 0.2s, filter 0.2s; user-select: none; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); }
-        .balloon:hover { filter: brightness(1.2) drop-shadow(2px 4px 8px rgba(0,0,0,0.6)); transform: scale(1.15) translateY(-5px) !important; }
-        .balloon img { width: 65px; height: auto; transform-origin: bottom center; }
-        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        .option-btn { padding: 12px; font-size: 16px; border: 2px solid #2E8B57; background: white; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
-        .option-btn:hover { background: #2E8B57; color: white; }
-
-        /* ================= 第二關專屬設定 ================= */
-        #page-level2 header { background-color: rgba(255, 105, 180, 0.9); }
-        #l2-game-container { 
-            position: relative; width: 100%; height: calc(100vh - 65px); 
-            background-color: #87CEFA;
-            /* 遊樂園大草原感漸層 */
-            background-image: linear-gradient(to bottom, #87CEFA 0%, #FFF0F5 50%, #98FB98 50%, #3CB371 100%);
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(46, 139, 87, 0.9); 
+            color: white; 
+            padding: 15px 30px; 
+            font-size: 20px; 
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 20;
         }
-        .flower { position: absolute; cursor: pointer; transition: transform 0.2s, filter 0.2s; user-select: none; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); }
-        .flower:hover { transform: scale(1.15); filter: brightness(1.2) drop-shadow(2px 4px 8px rgba(0,0,0,0.6)); }
-        .flower img { width: 70px; height: auto; }
+        #game-map {
+            position: relative; 
+            width: 100vw; 
+            height: calc(100vh - 60px);
+            background-image: url('village-background.jpg');
+            background-size: cover;
+            background-position: center bottom;
+            display: none; 
+            overflow: hidden; 
+        }
+        .cloud {
+            position: absolute; background: rgba(255, 255, 255, 0.7);
+            border-radius: 50px; filter: blur(2px);
+            animation: floatCloud linear infinite; pointer-events: none; z-index: 1;
+        }
+        .cloud::before, .cloud::after {
+            content: ''; position: absolute; background: rgba(255, 255, 255, 0.7); border-radius: 50%;
+        }
+        .cloud::before { width: 50%; height: 150%; top: -60%; left: 15%; }
+        .cloud::after { width: 40%; height: 120%; top: -30%; left: 50%; }
+        @keyframes floatCloud { from { left: -20%; } to { left: 110%; } }
+
+        .particle {
+            position: absolute; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            animation: riseParticle linear infinite; pointer-events: none; z-index: 2;
+        }
+        @keyframes riseParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
         
-        .drag-container { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
-        .drop-zones { display: flex; justify-content: space-around; gap: 20px; }
-        .drop-zone { flex: 1; min-height: 150px; border: 3px dashed #ccc; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; background: #f9f9f9; transition: background 0.2s; }
-        .drop-zone.dragover { background: #e0f7fa; border-color: #00bcd4; }
-        .drop-zone-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        #zone-equal .drop-zone-title { color: #2E8B57; }
-        #zone-unequal .drop-zone-title { color: #DC143C; }
-        .items-pool { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; min-height: 60px; padding: 15px; background: #eee; border-radius: 8px; }
-        .drag-item { padding: 12px 20px; background: #FFD700; border: 2px solid #DAA520; border-radius: 8px; cursor: grab; font-weight: bold; user-select: none; box-shadow: 0 3px 5px rgba(0,0,0,0.1); font-size: 16px; }
-        .drag-item:active { cursor: grabbing; }
-        .drag-item.correct { background: #90EE90; border-color: #32CD32; pointer-events: none; }
-        .drag-item.wrong { background: #FFB6C1; border-color: #FF69B4; pointer-events: none; }
-
-        .cert-btn-wrapper { background: white; padding: 15px; border-radius: 12px; display: inline-block; box-shadow: 0 0 15px rgba(0,0,0,0.2); border: 2px solid #ddd; }
-        .cert-btn { padding: 15px 40px; font-size: 24px; background-color: rgba(255, 105, 180, 0.9); color: white; border: 4px solid white; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: transform 0.2s, filter 0.2s; }
-        .cert-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
-
-        /* ================= 第三關 (證書頁) 專屬設定 ================= */
-        #page-cert { background-color: #f4f4f9; display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: auto; }
-        #page-cert.active { display: flex; }
-        .certificate-wrapper { background-color: #fff; padding: 20px; border: 10px solid #DAA520; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); width: 800px; max-width: 90%; text-align: center; position: relative; margin: 20px 0;}
-        .certificate-inner { border: 4px double #DAA520; padding: 50px 40px; border-radius: 4px; }
-        .cert-title { font-size: 42px; color: #D2691E; margin-bottom: 30px; font-weight: bold; letter-spacing: 2px; }
-        .cert-subtitle { font-size: 24px; color: #555; margin-bottom: 40px; }
-        .name-section { font-size: 28px; margin-bottom: 40px; color: #333; }
-        .name-input { font-size: 28px; padding: 5px 10px; border: none; border-bottom: 2px solid #333; text-align: center; width: 250px; font-family: "Microsoft JhengHei", sans-serif; background: transparent; color: #2E8B57; font-weight: bold; }
-        .name-input:focus { outline: none; border-bottom-color: #DAA520; }
-        .print-name { display: none; font-size: 32px; font-weight: bold; color: #2E8B57; text-decoration: underline; padding: 0 20px; }
-        .cert-content { font-size: 22px; line-height: 1.8; color: #444; margin-bottom: 60px; }
-        .cert-footer { text-align: right; font-size: 20px; color: #333; font-weight: bold; margin-top: 40px; }
-        .print-btn { margin-bottom: 30px; padding: 15px 40px; font-size: 22px; background-color: #4682B4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: background 0.2s, transform 0.2s; }
-        .print-btn:hover { background-color: #5F9EA0; transform: scale(1.05); }
-
-        /* 列印模式設定 */
-        @media print {
-            @page { size: landscape; margin: 0; }
-            body, html { background-color: white; }
-            #page-level1, #page-level2 { display: none !important; }
-            #page-cert { display: flex !important; height: 100vh; overflow: visible; }
-            .certificate-wrapper { box-shadow: none; width: 90%; margin: 2% auto; border-width: 8px; }
-            .print-btn { display: none !important; }
-            .name-input { display: none !important; }
-            .print-name { display: inline-block !important; }
+        .balloon {
+            position: absolute; cursor: pointer; transition: transform 0.2s, filter 0.2s;
+            user-select: none; width: 60px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); z-index: 5; 
         }
+        .balloon:hover { filter: drop-shadow(2px 4px 10px rgba(255,255,255,0.8)); }
+        
+        .modal, #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal { display: none; }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 12px; width: 80%; max-width: 550px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .instruction-list { text-align: left; font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 25px; }
+        .instruction-list p { margin: 8px 0; }
+
+        .option-btn {
+            display: block; width: 100%; margin: 12px 0; padding: 12px; font-size: 16px;
+            background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; cursor: pointer; transition: background 0.2s;
+        }
+        .option-btn:hover { background: #e2e6ea; border-color: #ced4da; }
+        .btn-container { text-align: center; }
+        .btn-action {
+            background: #ff8c00; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; 
+            display: inline-block; font-weight: bold; cursor: pointer; border: none; font-size: 20px; transition: transform 0.2s;
+        }
+        .btn-action:hover { background: #e07b00; transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-<!-- 背景音樂載入點 -->
-<audio id="bgm" loop>
-    <source src="bgm.mp3" type="audio/mpeg">
-</audio>
+    <!-- 加上防呆：就算沒有 mp3 檔案，遊戲也不會當機 -->
+    <audio id="bgm" loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
 
-<!-- ================= 第一關：村莊熱氣球 ================= -->
-<div id="page-level1" class="page active">
-    <div class="modal-overlay" id="l1-start-overlay" style="display: flex;">
-        <div class="modal">
-            <h2 style="color: #2E8B57; font-size: 28px; margin-top: 0;">第一關：觀念選擇題</h2>
-            <div class="instruction-text">
-                ☆請點選畫面中的熱汽球，每個熱汽球搭配 1 題單選題。<br>
-                ☆答題後，不論對、錯，答過題的熱汽球都會消失。<br>
-                ☆答對的題數如果小於 8 題，就出現重新挑戰的訊息與按鈕，請重新挑戰。<br>
-                ☆答對 8 題(含)以上，可以進入下一個關卡。<br>
-                ☆全部的關卡完成，可以製作個人的過關證書喔！
+    <div id="start-screen">
+        <div class="modal-content">
+            <h2 style="color: #2e8b57; text-align: center; margin-top: 0;">遊戲說明</h2>
+            <div class="instruction-list">
+                <p>☆ 請點選畫面中的熱汽球，每個熱汽球搭配 1 題單選題。</p>
+                <p>☆ 答題後，不論對、錯，答過題的熱汽球都會消失。</p>
+                <p>☆ 答對的題數如果小於 8 題，就出現重新挑戰的訊息與按鈕，請重新挑戰。</p>
+                <p>☆ 答對 8 題(含)以上，可以進入下一個關卡。</p>
+                <p>☆ 全部的關卡完成，可以製作個人的過關證書喔！</p>
             </div>
             <div class="btn-container">
-                <button class="action-btn" onclick="startLevel1()">開始遊戲</button>
+                <button class="btn-action" onclick="startGame()">開始遊戲</button>
             </div>
         </div>
     </div>
 
     <header>
-        <div>D1124241707林俊祥 - SDGs 性別平權</div>
-        <div id="l1-score-display">答對題數：0 / 10</div>
+        <div>D1124241707林俊祥SDGs 性別平權</div>
+        <div>答對題數：<span id="score">0</span> / 10</div>
     </header>
+    
+    <div id="game-map"></div>
+
+    <div id="question-modal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h3 id="question-text" style="line-height: 1.5; color: #333;">題目</h3>
+            <div id="options-container"></div>
+        </div>
+    </div>
+
+    <div id="result-modal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 id="result-title">遊戲結束</h2>
+            <p id="result-text" style="font-size: 18px;"></p>
+            <div class="btn-container" id="result-action"></div>
+        </div>
+    </div>
+
+    <script>
+        // 改用最相容的 var 與一般 function 寫法
+        var questions = [
+            { q: "聯合國永續發展目標(SDGs)中，關於「性別平權」是第幾個目標？", options: ["目標3", "目標4", "目標5", "目標10"], ans: 2 },
+            { q: "性別平權的核心理念是什麼？", options: ["女生比男生優秀", "不論性別，皆享有平等的權利與機會", "只有男生可以擔任主管", "男女生必須做完全一樣的事"], ans: 1 },
+            { q: "在職場上，阻礙女性晉升到高階職位的無形障礙通常被稱為什麼？", options: ["玻璃天花板", "水泥牆壁", "旋轉門", "性別紅利"], ans: 0 },
+            { q: "哪一項是打破傳統性別刻板印象的表現？", options: ["男生不可以哭", "女生理科一定比較差", "爸爸也可以請育嬰假照顧小孩", "玩具一定要分男生藍色、女生粉紅色"], ans: 2 },
+            { q: "什麼是「同工同酬」？", options: ["大家做一樣多的工作", "做相同價值的工作，獲得相等的報酬", "男生薪水應該比較高", "女生薪水應該比較高"], ans: 1 },
+            { q: "《消除對婦女一切形式歧視公約》的英文簡稱是什麼？", options: ["CEDAW", "UNICEF", "WHO", "UNESCO"], ans: 0 },
+            { q: "對於家務分工，哪種態度最符合性別平權？", options: ["家事是媽媽的責任", "男生幫忙做家事是體貼", "家庭成員共同分擔", "誰賺錢少誰就做家事"], ans: 2 },
+            { q: "在學校教育中，如何落實性別平等？", options: ["男生只能參加籃球社", "鼓勵學生跨越性別限制，選擇有興趣的學科與活動", "女生不需要學寫程式", "男女分班最好"], ans: 1 },
+            { q: "遇到校園或職場性騷擾時，最正確的做法是？", options: ["當作沒發生", "勇敢說不並尋求正規管道申訴與協助", "自認倒楣", "私下報復"], ans: 1 },
+            { q: "為了促進政治與決策參與的性別平等，常見的做法是？", options: ["禁止女性參政", "設立性別比例保障名額 (如任一性別不少於三分之一)", "只允許男性當主管", "完全順其自然"], ans: 1 }
+        ];
+
+        var score = 0;
+        var answeredCount = 0;
+        var targetScore = 8; 
+
+        var bgm = document.getElementById('bgm');
+        var startScreen = document.getElementById('start-screen');
+        var map = document.getElementById('game-map');
+        var scoreEl = document.getElementById('score');
+        
+        var qModal = document.getElementById('question-modal');
+        var qText = document.getElementById('question-text');
+        var optionsContainer = document.getElementById('options-container');
+        
+        var rModal = document.getElementById('result-modal');
+        var rTitle = document.getElementById('result-title');
+        var rText = document.getElementById('result-text');
+        var rAction = document.getElementById('result-action');
+
+        function startGame() {
+            startScreen.style.display = 'none';
+            map.style.display = 'block';
+            
+            // 安全播放音樂的寫法
+            if (bgm) {
+                var playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(error) {
+                        console.log("無法播放音樂", error);
+                    });
+                }
+            }
+            
+            generateScenery(); 
+            generateBalloons(); 
+        }
+
+        function generateScenery() {
+            for(var i = 0; i < 5; i++) {
+                var cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.top = (Math.random() * 30 + 5) + '%';
+                var cloudWidth = Math.random() * 80 + 100;
+                cloud.style.width = cloudWidth + 'px';
+                cloud.style.height = (cloudWidth * 0.3) + 'px';
+                cloud.style.animationDuration = (Math.random() * 30 + 40) + 's';
+                cloud.style.animationDelay = '-' + (Math.random() * 40) + 's';
+                map.appendChild(cloud);
+            }
+            for(var j = 0; j < 25; j++) {
+                var particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (Math.random() * 100) + '%';
+                var size = Math.random() * 4 + 2; 
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                map.appendChild(particle);
+            }
+        }
+
+        function generateBalloons() {
+            var scales = [1, 1.2, 1.5];
+            questions.forEach(function(item, index) {
+                var balloon = document.createElement('img');
+                balloon.src = 'hut.png'; 
+                balloon.className = 'balloon';
+                balloon.alt = '熱氣球'; // 預防圖片找不到時至少顯示文字
+                
+                balloon.style.top = (Math.random() * 40 + 5) + '%';
+                balloon.style.left = (Math.random() * 85 + 5) + '%';
+
+                var randomScale = scales[Math.floor(Math.random() * scales.length)];
+                balloon.style.transform = 'scale(' + randomScale + ')';
+                
+                balloon.onclick = function() {
+                    openQuestion(index, balloon);
+                };
+                map.appendChild(balloon);
+            });
+        }
+
+        function openQuestion(index, balloonElement) {
+            var q = questions[index];
+            qText.innerText = "【挑戰題目】\n" + q.q;
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach(function(opt, optIndex) {
+                var btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = function() {
+                    submitAnswer(optIndex, q.ans, balloonElement, q.options[q.ans]);
+                };
+                optionsContainer.appendChild(btn);
+            });
+            
+            qModal.style.display = 'flex';
+        }
+
+        function submitAnswer(selected, correct, balloonElement, correctText) {
+            if (selected === correct) {
+                score++;
+                scoreEl.innerText = score;
+                alert("恭喜答對了！");
+            } else {
+                alert("答錯了！\n正確答案是：" + correctText);
+            }
+            
+            balloonElement.style.display = 'none'; 
+            qModal.style.display = 'none';
+            answeredCount++;
+            
+            if (score >= targetScore) {
+                setTimeout(function() { showResult(true); }, 500);
+            } else if (answeredCount === questions.length) {
+                setTimeout(function() { showResult(false); }, 500);
+            }
+        }
+
+        function showResult(isWin) {
+            rModal.style.display = 'flex';
+            rText.innerText = "目前答對了 " + score + " 題！";
+            
+            if (isWin) {
+                rTitle.innerText = "🎉 恭喜過關！進入下一關 🎉";
+                rTitle.style.color = "#28a745"; 
+                rAction.innerHTML = '<a href="level2.html" class="btn-action">下一關</a>';
+            } else {
+                rTitle.innerText = "💥 挑戰失敗，請再接再厲！ 💥";
+                rTitle.style.color = "#dc3545"; 
+                rAction.innerHTML = '<button class="btn-action" onclick="location.reload()">重新挑戰</button>';
+            }
+        }
+    </script>
+</body>
+</html>
